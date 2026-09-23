@@ -16,6 +16,14 @@ def sigmoid(z: ArrayLike) -> np.ndarray:
 class LogisticRegression:
     """Predict probabilities with a weighted sum passed through a sigmoid."""
 
+    @classmethod
+    def from_parameters(cls, weights: ArrayLike, bias: float) -> Self:
+        """Create an already trained model from stored parameters."""
+        model = cls()
+        model.weights = np.asarray(weights, dtype=float)
+        model.bias = float(bias)
+        return model
+
     def __init__(self, learning_rate: float = 0.1, iterations: int = 1000) -> None:
         self.learning_rate = learning_rate
         self.iterations = iterations

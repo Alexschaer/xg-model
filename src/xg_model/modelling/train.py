@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from xg_model.features.table import FEATURES_PATH
+from xg_model.modelling.artifact import MODEL_PATH, XgModel
 from xg_model.modelling.interpretation import feature_effects
 from xg_model.modelling.logistic_regression import LogisticRegression
 from xg_model.modelling.metrics import calibration_table, log_loss
@@ -63,6 +64,8 @@ def main() -> None:  # pragma: no cover
     effects = feature_effects(model, scaler, list(features.columns))
     print("\nFeature effects, most important first:")
     print(effects.round(3).to_string(index=False))
+    XgModel(list(features.columns), scaler, model).save()
+    print(f"\nModel saved to {MODEL_PATH}")
 
 
 if __name__ == "__main__":  # pragma: no cover
