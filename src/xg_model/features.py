@@ -1,10 +1,13 @@
 """Turn the raw shots table into model features."""
 
 import math
+from pathlib import Path
 
 import pandas as pd
 
+from xg_model.dataset import build_shots_table, load_records
 from xg_model.geometry import distance_to_goal, goal_angle
+from xg_model.strength import match_ratings
 
 
 def add_geometry(table: pd.DataFrame) -> pd.DataFrame:
@@ -28,3 +31,17 @@ def add_team_strength(table: pd.DataFrame, ratings: dict) -> pd.DataFrame:
         opponent_rating=opponent,
         rating_difference=team - opponent,
     )
+
+
+FEATURES_PATH = Path("data/shots.parquet")
+
+
+def build_features(records: list[dict]) -> pd.DataFrame:
+    """Return the complete feature table, one row per shot."""
+    table = build_shots_table(records)
+    table = add_geometry(table)
+    return add_team_strength(table, match_ratings(records))
+
+
+if __name__ == "__main__":  # pragma: no cover
+    build_features(load_records()).to_parquet(FEATURES_PATH)

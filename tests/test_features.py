@@ -3,7 +3,53 @@ import math
 import pandas as pd
 import pytest
 
-from xg_model.features import add_geometry, add_team_strength
+from xg_model.features import add_geometry, add_team_strength, build_features
+
+SHOT = {
+    "index": 5,
+    "period": 1,
+    "minute": 10,
+    "team": {"id": 10, "name": "Home FC"},
+    "player": {"name": "Striker"},
+    "location": [108.0, 40.0],
+    "play_pattern": {"name": "Regular Play"},
+    "shot": {
+        "body_part": {"name": "Right Foot"},
+        "type": {"name": "Open Play"},
+        "technique": {"name": "Normal"},
+        "outcome": {"name": "Goal"},
+        "statsbomb_xg": 0.3,
+    },
+}
+
+RECORD = {
+    "competition": {
+        "competition_id": 1,
+        "season_id": 1,
+        "competition_name": "Test League",
+        "season_name": "2016",
+        "competition_gender": "male",
+    },
+    "match": {
+        "match_id": 1,
+        "match_date": "2016-01-01",
+        "kick_off": None,
+        "home_team": {"home_team_id": 10},
+        "away_team": {"away_team_id": 20},
+        "home_score": 1,
+        "away_score": 0,
+    },
+    "shots": [SHOT],
+    "own_goals": [],
+}
+
+
+def test_build_features_combines_all_steps():
+    table = build_features([RECORD])
+
+    assert len(table) == 1
+    expected = {"distance", "defenders_in_cone", "score_difference", "team_rating"}
+    assert expected <= set(table.columns)
 
 
 def test_add_geometry_adds_distance_and_angle():
