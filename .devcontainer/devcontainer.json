@@ -2,7 +2,12 @@
   "name": "xg-model",
 
   "image": "mcr.microsoft.com/devcontainers/python:3.14",
-  "postCreateCommand": "pip install uv",
+
+  "containerEnv": {
+    "UV_LINK_MODE": "copy"
+  },
+
+  "postCreateCommand": "pip install uv && uv sync",
 
   "customizations": {
     "vscode": {
