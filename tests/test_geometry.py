@@ -19,6 +19,7 @@ def test_in_triangle_outside():
 def test_in_triangle_on_edge_counts_as_inside():
     assert in_triangle((5.0, 0.0), *TRIANGLE)
 
+
 def test_distance_classic_triangle():
     assert distance(0, 0, 3, 4) == 5
 

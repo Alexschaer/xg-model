@@ -57,9 +57,7 @@ def freeze_frame_columns(
         ),
         "goalkeeper_visible": goalkeeper is not None,
         "goalkeeper_distance": (
-            float(distance_to_goal(*goalkeeper["location"]))
-            if goalkeeper
-            else math.nan
+            float(distance_to_goal(*goalkeeper["location"])) if goalkeeper else math.nan
         ),
         "goalkeeper_in_cone": in_cone(goalkeeper) if goalkeeper else False,
     }

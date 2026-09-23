@@ -1,4 +1,5 @@
 """Load stored match records and turn them into a table of shots."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -66,8 +67,8 @@ def shot_row(record: Record, shot: dict[str, Any]) -> dict[str, Any]:
         "open_goal": details.get("open_goal", False),
         "aerial_won": details.get("aerial_won", False),
         **key_pass_columns(shot.get("key_pass")),
-                **freeze_frame_columns(shot["location"], details.get("freeze_frame")),
-                        **game_state_columns(record, shot),
+        **freeze_frame_columns(shot["location"], details.get("freeze_frame")),
+        **game_state_columns(record, shot),
         "is_goal": details["outcome"]["name"] == "Goal",
         "statsbomb_xg": details["statsbomb_xg"],
     }
