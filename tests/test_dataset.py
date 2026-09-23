@@ -8,7 +8,9 @@ RECORD = {
         "season_name": "2015/2016",
         "competition_gender": "male",
     },
-    "match": {"match_id": 1},
+    "match": {"match_id": 1, "home_team": {"home_team_id": 10}},
+    "shots": [],
+    "own_goals": [],
 }
 
 
@@ -16,7 +18,8 @@ def make_shot(outcome="Saved", **extra):
     shot = {
         "period": 1,
         "minute": 5,
-        "team": {"name": "Chelsea"},
+        "index": 1,
+        "team": {"id": 10, "name": "Chelsea"},
         "player": {"name": "Eden Hazard"},
         "location": [100.0, 40.0],
         "play_pattern": {"name": "Regular Play"},

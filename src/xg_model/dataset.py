@@ -5,6 +5,7 @@ from typing import Any
 
 import pandas as pd
 
+from xg_model.context import game_state_columns
 from xg_model.freeze_frame import freeze_frame_columns
 from xg_model.pipeline import DATA_DIR
 
@@ -66,6 +67,7 @@ def shot_row(record: Record, shot: dict[str, Any]) -> dict[str, Any]:
         "aerial_won": details.get("aerial_won", False),
         **key_pass_columns(shot.get("key_pass")),
                 **freeze_frame_columns(shot["location"], details.get("freeze_frame")),
+                        **game_state_columns(record, shot),
         "is_goal": details["outcome"]["name"] == "Goal",
         "statsbomb_xg": details["statsbomb_xg"],
     }
