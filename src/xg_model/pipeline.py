@@ -14,9 +14,7 @@ def download_all_matches(data_dir: Path = DATA_DIR) -> None:
     data_dir.mkdir(parents=True, exist_ok=True)
 
     for competition in fetch_competitions():
-        matches = fetch_matches(
-            competition["competition_id"], competition["season_id"]
-        )
+        matches = fetch_matches(competition["competition_id"], competition["season_id"])
         print(
             f"{competition['competition_name']} {competition['season_name']}: "
             f"{len(matches)} matches"
