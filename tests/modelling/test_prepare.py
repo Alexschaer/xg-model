@@ -5,9 +5,11 @@ import pytest
 
 from xg_model.modelling.prepare import (
     add_transformations,
+    baseline_columns,
+    complete,
+    encode,
     fill_missing,
     filter_shots,
-    one_hot,
     prepare,
     season_start,
 )
@@ -82,14 +84,41 @@ def test_fill_missing_keeps_known_rating():
     assert result["has_rating"].iloc[0]
 
 
-def test_one_hot_drops_most_common_category():
+def test_add_transformations_takes_log_of_distance():
+    result = add_transformations(table({"distance": math.e - 1}))
+
+    assert result["log_distance"].iloc[0] == pytest.approx(1)
+
+
+def test_add_transformations_flags_any_defender():
+    result = add_transformations(
+        table({"defenders_in_cone": 0.0}, {"defenders_in_cone": 3.0})
+    )
+
+    assert list(result["any_defender_in_cone"]) == [False, True]
+
+
+def test_baseline_columns_are_the_most_common_categories():
     shots = table(
         {"body_part": "Right Foot"},
         {"body_part": "Right Foot"},
         {"body_part": "Head"},
     )
 
-    assert list(one_hot(shots, "body_part").columns) == ["body_part_Head"]
+    assert "body_part_Right Foot" in baseline_columns(shots)
+
+
+def test_encode_keeps_every_category():
+    encoded = encode(complete(table({"body_part": "Head"})))
+
+    assert encoded["body_part_Head"].iloc[0] == 1
+
+
+def test_prepare_drops_baseline_categories_only():
+    features, _ = prepare(table({}, {}, {"body_part": "Head"}))
+
+    assert "body_part_Right Foot" not in features.columns
+    assert "body_part_Head" in features.columns
 
 
 def test_prepare_returns_only_numbers_without_gaps():
@@ -104,20 +133,6 @@ def test_prepare_drops_rows_with_remaining_gaps():
     features, labels = prepare(table({}, {"nearest_opponent_distance": math.nan}))
 
     assert len(features) == len(labels) == 1
-
-
-def test_add_transformations_takes_log_of_distance():
-    result = add_transformations(table({"distance": math.e - 1}))
-
-    assert result["log_distance"].iloc[0] == pytest.approx(1)
-
-
-def test_add_transformations_flags_any_defender():
-    result = add_transformations(
-        table({"defenders_in_cone": 0.0}, {"defenders_in_cone": 3.0})
-    )
-
-    assert list(result["any_defender_in_cone"]) == [False, True]
 
 
 def test_prepare_includes_transformed_features():

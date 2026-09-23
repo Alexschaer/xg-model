@@ -1,4 +1,4 @@
-"""Prepare the feature table for model training."""
+"""Prepare the feature table for model training and prediction."""
 
 import numpy as np
 import pandas as pd
@@ -78,26 +78,30 @@ def add_transformations(table: pd.DataFrame) -> pd.DataFrame:
     )
 
 
-def one_hot(table: pd.DataFrame, column: str) -> pd.DataFrame:
-    """Encode a category column as 0/1 columns, dropping the most common one."""
-    baseline = table[column].mode()[0]
-    dummies = pd.get_dummies(table[column], prefix=column, dtype=int)
-    return dummies.drop(columns=f"{column}_{baseline}")
+def complete(table: pd.DataFrame) -> pd.DataFrame:
+    """Fill gaps and add reshaped features, as needed before encoding."""
+    return add_transformations(fill_missing(table))
 
 
-def prepare(table: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
-    """Return the model inputs and the goal labels."""
-    table = filter_shots(table)
-    table = fill_missing(table)
-    table = add_transformations(table)
-    table = table.dropna(subset=NUMERIC)
-
-    features = pd.concat(
+def encode(table: pd.DataFrame) -> pd.DataFrame:
+    """Turn a completed table into numbers, with a 0/1 column for every category."""
+    return pd.concat(
         [
             table[NUMERIC].astype(float),
             table[FLAGS].astype(int),
-            *[one_hot(table, column) for column in CATEGORICAL],
+            pd.get_dummies(table[CATEGORICAL], dtype=int),
         ],
         axis=1,
     )
+
+
+def baseline_columns(table: pd.DataFrame) -> list[str]:
+    """Return the encoded column of the most common value of every category."""
+    return [f"{column}_{table[column].mode()[0]}" for column in CATEGORICAL]
+
+
+def prepare(table: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
+    """Return the model inputs and the goal labels for training."""
+    table = complete(filter_shots(table)).dropna(subset=NUMERIC)
+    features = encode(table).drop(columns=baseline_columns(table))
     return features, table["is_goal"].astype(int)
