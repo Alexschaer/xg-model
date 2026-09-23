@@ -6,6 +6,7 @@ import pandas as pd
 from xg_model.features.game_state import PENALTY_SHOOTOUT_PERIOD
 
 FIRST_SEASON = 2003
+MAX_OPPONENT_DISTANCE = 8.0
 
 NUMERIC = [
     "distance",
@@ -71,10 +72,18 @@ def fill_missing(table: pd.DataFrame) -> pd.DataFrame:
 
 
 def add_transformations(table: pd.DataFrame) -> pd.DataFrame:
-    """Add reshaped versions of features whose effect is not linear."""
+    """Add reshaped versions of features whose effect is not linear.
+
+    Space to the nearest opponent is capped: beyond a few yards a shooter is
+    unmarked, and more space barely helps. The cap also stops the linear model
+    from extrapolating far beyond the distances it was trained on.
+    """
     return table.assign(
         log_distance=np.log1p(table["distance"]),
         any_defender_in_cone=table["defenders_in_cone"] > 0,
+        nearest_opponent_distance=table["nearest_opponent_distance"].clip(
+            upper=MAX_OPPONENT_DISTANCE
+        ),
     )
 
 

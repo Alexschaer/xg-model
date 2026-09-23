@@ -4,6 +4,7 @@ import pandas as pd
 import pytest
 
 from xg_model.modelling.prepare import (
+    MAX_OPPONENT_DISTANCE,
     add_transformations,
     baseline_columns,
     complete,
@@ -96,6 +97,14 @@ def test_add_transformations_flags_any_defender():
     )
 
     assert list(result["any_defender_in_cone"]) == [False, True]
+
+
+def test_add_transformations_caps_space_to_nearest_opponent():
+    result = add_transformations(
+        table({"nearest_opponent_distance": 3.0}, {"nearest_opponent_distance": 30.0})
+    )
+
+    assert list(result["nearest_opponent_distance"]) == [3.0, MAX_OPPONENT_DISTANCE]
 
 
 def test_baseline_columns_are_the_most_common_categories():
