@@ -1,6 +1,6 @@
 import pandas as pd
 
-from xg_model.split import holdout_mask
+from xg_model.modelling.split import holdout_mask
 
 MATCH_IDS = pd.Series([match for match in range(100) for _ in range(3)])
 

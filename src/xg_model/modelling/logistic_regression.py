@@ -5,32 +5,12 @@ from typing import Self
 import numpy as np
 from numpy.typing import ArrayLike
 
+from xg_model.modelling.metrics import log_loss
+
 
 def sigmoid(z: ArrayLike) -> np.ndarray:
     """Map any real number to a probability between 0 and 1."""
     return np.exp(-np.logaddexp(0, -np.asarray(z, dtype=float)))
-
-
-def log_loss(labels: ArrayLike, probabilities: ArrayLike) -> float:
-    """Return the average log loss of predicted probabilities."""
-    y = np.asarray(labels, dtype=float)
-    p = np.clip(np.asarray(probabilities, dtype=float), 1e-15, 1 - 1e-15)
-    return float(-np.mean(y * np.log(p) + (1 - y) * np.log(1 - p)))
-
-
-class Standardizer:
-    """Rescale features to mean 0 and standard deviation 1."""
-
-    def fit(self, features: np.ndarray) -> Self:
-        """Learn mean and standard deviation from the training data."""
-        self.mean = features.mean(axis=0)
-        std = features.std(axis=0)
-        self.std = np.where(std == 0, 1.0, std)
-        return self
-
-    def transform(self, features: np.ndarray) -> np.ndarray:
-        """Rescale features with the learned mean and standard deviation."""
-        return (features - self.mean) / self.std
 
 
 class LogisticRegression:

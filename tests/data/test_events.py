@@ -1,4 +1,4 @@
-from xg_model.shots import extract_own_goals, extract_shots
+from xg_model.data.events import extract_own_goals, extract_shots
 
 PASS = {"id": "p", "type": {"name": "Pass"}}
 SHOT = {"id": "s", "type": {"name": "Shot"}, "shot": {"key_pass_id": "p"}}

@@ -1,6 +1,6 @@
 import io
 
-from xg_model import download
+from xg_model.data import download
 
 
 def test_fetch_json_builds_url_and_parses_response(monkeypatch):

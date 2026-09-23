@@ -3,8 +3,8 @@
 import json
 from pathlib import Path
 
-from xg_model.download import fetch_competitions, fetch_events, fetch_matches
-from xg_model.shots import extract_own_goals, extract_shots
+from xg_model.data.download import fetch_competitions, fetch_events, fetch_matches
+from xg_model.data.events import extract_own_goals, extract_shots
 
 DATA_DIR = Path("data/matches")
 

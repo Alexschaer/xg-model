@@ -1,4 +1,4 @@
-from xg_model.context import game_state_columns, goals_in_match
+from xg_model.features.game_state import game_state_columns, goals_in_match
 
 HOME = 10
 AWAY = 20

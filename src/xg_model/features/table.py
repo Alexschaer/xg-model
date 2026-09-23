@@ -1,16 +1,21 @@
-"""Load stored match records and turn them into a table of shots."""
+"""Build the shot table: one row per shot with all model features."""
 
 import json
+import math
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
 
-from xg_model.context import game_state_columns
-from xg_model.freeze_frame import freeze_frame_columns
-from xg_model.pipeline import DATA_DIR
+from xg_model.data.ingest import DATA_DIR
+from xg_model.features.freeze_frame import freeze_frame_columns
+from xg_model.features.game_state import game_state_columns
+from xg_model.features.geometry import distance_to_goal, goal_angle
+from xg_model.features.strength import Ratings, match_ratings
 
 Record = dict[str, Any]
+
+FEATURES_PATH = Path("data/shots.parquet")
 
 
 def load_records(data_dir: Path = DATA_DIR) -> list[Record]:
@@ -78,3 +83,37 @@ def build_shots_table(records: list[Record]) -> pd.DataFrame:
     """Return a table with one row per shot."""
     rows = [shot_row(record, shot) for record in records for shot in record["shots"]]
     return pd.DataFrame(rows)
+
+
+def add_geometry(table: pd.DataFrame) -> pd.DataFrame:
+    """Return a copy of the table with distance and angle to goal."""
+    return table.assign(
+        distance=distance_to_goal(table["x"], table["y"]),
+        angle=goal_angle(table["x"], table["y"]),
+    )
+
+
+def add_team_strength(table: pd.DataFrame, ratings: Ratings) -> pd.DataFrame:
+    """Return a copy of the table with the Elo ratings of both teams."""
+    missing = (math.nan, math.nan)
+    home = table["match_id"].map(lambda match_id: ratings.get(match_id, missing)[0])
+    away = table["match_id"].map(lambda match_id: ratings.get(match_id, missing)[1])
+
+    team = home.where(table["is_home"], away)
+    opponent = away.where(table["is_home"], home)
+    return table.assign(
+        team_rating=team,
+        opponent_rating=opponent,
+        rating_difference=team - opponent,
+    )
+
+
+def build_features(records: list[Record]) -> pd.DataFrame:
+    """Return the complete feature table, one row per shot."""
+    table = build_shots_table(records)
+    table = add_geometry(table)
+    return add_team_strength(table, match_ratings(records))
+
+
+if __name__ == "__main__":  # pragma: no cover
+    build_features(load_records()).to_parquet(FEATURES_PATH)

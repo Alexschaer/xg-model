@@ -3,7 +3,12 @@ import math
 import pandas as pd
 import pytest
 
-from xg_model.geometry import distance, distance_to_goal, goal_angle, in_triangle
+from xg_model.features.geometry import (
+    distance,
+    distance_to_goal,
+    goal_angle,
+    in_triangle,
+)
 
 TRIANGLE = ((0.0, 0.0), (10.0, 0.0), (0.0, 10.0))
 

@@ -1,6 +1,6 @@
 import json
 
-from xg_model import pipeline
+from xg_model.data import ingest
 
 COMPETITION = {
     "competition_id": 43,
@@ -17,20 +17,20 @@ EVENTS = [
 
 
 def fake_sources(monkeypatch, fetched_events):
-    monkeypatch.setattr(pipeline, "fetch_competitions", lambda: [COMPETITION])
-    monkeypatch.setattr(pipeline, "fetch_matches", lambda c, s: [MATCH])
+    monkeypatch.setattr(ingest, "fetch_competitions", lambda: [COMPETITION])
+    monkeypatch.setattr(ingest, "fetch_matches", lambda c, s: [MATCH])
 
     def fake_fetch_events(match_id):
         fetched_events.append(match_id)
         return EVENTS
 
-    monkeypatch.setattr(pipeline, "fetch_events", fake_fetch_events)
+    monkeypatch.setattr(ingest, "fetch_events", fake_fetch_events)
 
 
 def test_download_all_matches_stores_complete_record(monkeypatch, tmp_path):
     fake_sources(monkeypatch, [])
 
-    pipeline.download_all_matches(tmp_path)
+    ingest.download_all_matches(tmp_path)
 
     record = json.loads((tmp_path / "1.json").read_text())
     assert record["competition"] == COMPETITION
@@ -44,7 +44,7 @@ def test_download_all_matches_skips_existing_matches(monkeypatch, tmp_path):
     fake_sources(monkeypatch, fetched_events)
     (tmp_path / "1.json").write_text("{}")
 
-    pipeline.download_all_matches(tmp_path)
+    ingest.download_all_matches(tmp_path)
 
     assert fetched_events == []
 
@@ -52,6 +52,6 @@ def test_download_all_matches_skips_existing_matches(monkeypatch, tmp_path):
 def test_download_all_matches_leaves_no_temporary_files(monkeypatch, tmp_path):
     fake_sources(monkeypatch, [])
 
-    pipeline.download_all_matches(tmp_path)
+    ingest.download_all_matches(tmp_path)
 
     assert list(tmp_path.glob("*.tmp")) == []

@@ -1,6 +1,11 @@
 import json
 
-from xg_model.dataset import build_shots_table, key_pass_columns, load_records, shot_row
+from xg_model.features.table import (
+    build_shots_table,
+    key_pass_columns,
+    load_records,
+    shot_row,
+)
 
 RECORD = {
     "competition": {

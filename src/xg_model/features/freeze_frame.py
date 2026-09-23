@@ -3,7 +3,7 @@
 import math
 from typing import Any
 
-from xg_model.geometry import (
+from xg_model.features.geometry import (
     GOAL_X,
     LEFT_POST_Y,
     RIGHT_POST_Y,

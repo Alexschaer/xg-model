@@ -2,7 +2,13 @@ import math
 
 import pandas as pd
 
-from xg_model.prepare import fill_missing, filter_shots, one_hot, prepare, season_start
+from xg_model.modelling.prepare import (
+    fill_missing,
+    filter_shots,
+    one_hot,
+    prepare,
+    season_start,
+)
 
 BASE = {
     "period": 1,

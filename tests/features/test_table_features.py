@@ -3,7 +3,7 @@ import math
 import pandas as pd
 import pytest
 
-from xg_model.features import add_geometry, add_team_strength, build_features
+from xg_model.features.table import add_geometry, add_team_strength, build_features
 
 SHOT = {
     "index": 5,

@@ -3,7 +3,9 @@ import math
 import numpy as np
 import pytest
 
-from xg_model.model import LogisticRegression, Standardizer, log_loss, sigmoid
+from xg_model.modelling.logistic_regression import LogisticRegression, sigmoid
+from xg_model.modelling.metrics import log_loss
+from xg_model.modelling.scaling import Standardizer
 
 
 def test_sigmoid_of_zero_is_one_half():

@@ -1,6 +1,6 @@
 import pytest
 
-from xg_model.strength import (
+from xg_model.features.strength import (
     INITIAL_RATING,
     actual_score,
     elo_before_matches,

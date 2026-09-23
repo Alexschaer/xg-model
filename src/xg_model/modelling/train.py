@@ -3,10 +3,12 @@
 import numpy as np
 import pandas as pd
 
-from xg_model.features import FEATURES_PATH
-from xg_model.model import LogisticRegression, Standardizer, log_loss
-from xg_model.prepare import prepare
-from xg_model.split import holdout_mask
+from xg_model.features.table import FEATURES_PATH
+from xg_model.modelling.logistic_regression import LogisticRegression
+from xg_model.modelling.metrics import log_loss
+from xg_model.modelling.prepare import prepare
+from xg_model.modelling.scaling import Standardizer
+from xg_model.modelling.split import holdout_mask
 
 
 def main() -> None:  # pragma: no cover

@@ -5,9 +5,9 @@ from pathlib import Path
 
 import pandas as pd
 
-from xg_model.dataset import build_shots_table, load_records
-from xg_model.geometry import distance_to_goal, goal_angle
-from xg_model.strength import match_ratings
+from xg_model.features.geometry import distance_to_goal, goal_angle
+from xg_model.features.strength import match_ratings
+from xg_model.features.table import build_shots_table, load_records
 
 
 def add_geometry(table: pd.DataFrame) -> pd.DataFrame:

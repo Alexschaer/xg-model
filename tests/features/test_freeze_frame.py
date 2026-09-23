@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from xg_model.freeze_frame import freeze_frame_columns
+from xg_model.features.freeze_frame import freeze_frame_columns
 
 PENALTY_SPOT = [108.0, 40.0]
 

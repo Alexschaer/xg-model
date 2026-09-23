@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from xg_model.context import PENALTY_SHOOTOUT_PERIOD
+from xg_model.features.game_state import PENALTY_SHOOTOUT_PERIOD
 
 FIRST_SEASON = 2003
 
