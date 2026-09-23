@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from xg_model.features.table import FEATURES_PATH
+from xg_model.modelling.interpretation import feature_effects
 from xg_model.modelling.logistic_regression import LogisticRegression
 from xg_model.modelling.metrics import calibration_table, log_loss
 from xg_model.modelling.plots import calibration_plot, loss_curve
@@ -59,6 +60,9 @@ def main() -> None:  # pragma: no cover
         {"Own model": own_calibration, "StatsBomb": statsbomb_calibration}
     ).savefig(FIGURES_DIR / "calibration.png", dpi=150)
     print(f"\nFigures saved to {FIGURES_DIR}/")
+    effects = feature_effects(model, scaler, list(features.columns))
+    print("\nFeature effects, most important first:")
+    print(effects.round(3).to_string(index=False))
 
 
 if __name__ == "__main__":  # pragma: no cover
