@@ -6,14 +6,14 @@ import pandas as pd
 from xg_model.features import FEATURES_PATH
 from xg_model.model import LogisticRegression, Standardizer, log_loss
 from xg_model.prepare import prepare
-from xg_model.split import test_mask
+from xg_model.split import holdout_mask
 
 
 def main() -> None:  # pragma: no cover
     """Train on the training matches and evaluate on the test matches."""
     table = pd.read_parquet(FEATURES_PATH)
     features, labels = prepare(table)
-    is_test = test_mask(table.loc[features.index, "match_id"]).to_numpy()
+    is_test = holdout_mask(table.loc[features.index, "match_id"]).to_numpy()
     statsbomb = table.loc[features.index, "statsbomb_xg"].to_numpy()
 
     x = features.to_numpy(dtype=float)

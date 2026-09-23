@@ -7,7 +7,7 @@ TEST_SHARE = 0.2
 SEED = 42
 
 
-def test_mask(
+def holdout_mask(
     match_ids: pd.Series, test_share: float = TEST_SHARE, seed: int = SEED
 ) -> pd.Series:
     """Return True for every shot whose match belongs to the test set."""
