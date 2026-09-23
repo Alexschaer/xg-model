@@ -24,3 +24,21 @@ def goal_angle(x: ArrayLike, y: ArrayLike) -> ArrayLike:
     to_left_post = np.arctan2(np.subtract(LEFT_POST_Y, y), np.subtract(GOAL_X, x))
     to_right_post = np.arctan2(np.subtract(RIGHT_POST_Y, y), np.subtract(GOAL_X, x))
     return np.abs(to_right_post - to_left_post)
+
+
+Point = tuple[float, float]
+
+
+def _cross(origin: Point, a: Point, b: Point) -> float:
+    """Return the cross product of (a - origin) and (b - origin)."""
+    return (a[0] - origin[0]) * (b[1] - origin[1]) - (a[1] - origin[1]) * (
+        b[0] - origin[0]
+    )
+
+
+def in_triangle(point: Point, a: Point, b: Point, c: Point) -> bool:
+    """Return whether a point lies inside or on the edge of a triangle."""
+    sides = [_cross(a, b, point), _cross(b, c, point), _cross(c, a, point)]
+    has_negative = any(side < 0 for side in sides)
+    has_positive = any(side > 0 for side in sides)
+    return not (has_negative and has_positive)

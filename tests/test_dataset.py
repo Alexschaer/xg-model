@@ -1,6 +1,6 @@
 import json
 
-from xg_model.dataset import build_shots_table, load_records, shot_row
+from xg_model.dataset import build_shots_table, key_pass_columns, load_records, shot_row
 
 RECORD = {
     "competition": {
@@ -77,3 +77,52 @@ def test_load_records_reads_all_files(tmp_path):
     records = load_records(tmp_path)
 
     assert [record["match"]["match_id"] for record in records] == [1, 2]
+
+
+def make_pass(**extra):
+    details = {"height": {"name": "Ground Pass"}, "length": 15.0}
+    return {"pass": {**details, **extra}}
+
+
+def test_key_pass_columns_without_assist():
+    columns = key_pass_columns(None)
+
+    assert columns["assisted"] is False
+    assert columns["assist_height"] == "None"
+
+
+def test_key_pass_columns_describes_pass():
+    columns = key_pass_columns(make_pass())
+
+    assert columns["assisted"] is True
+    assert columns["assist_height"] == "Ground Pass"
+    assert columns["assist_length"] == 15.0
+    assert columns["assist_cross"] is False
+
+
+def test_key_pass_columns_detects_cross():
+    assert key_pass_columns(make_pass(cross=True))["assist_cross"] is True
+
+
+def test_key_pass_columns_detects_cut_back():
+    assert key_pass_columns(make_pass(cut_back=True))["assist_cut_back"] is True
+
+
+def test_key_pass_columns_detects_through_ball_as_flag():
+    columns = key_pass_columns(make_pass(through_ball=True))
+
+    assert columns["assist_through_ball"] is True
+
+
+def test_key_pass_columns_detects_through_ball_as_technique():
+    columns = key_pass_columns(make_pass(technique={"name": "Through Ball"}))
+
+    assert columns["assist_through_ball"] is True
+
+
+def test_shot_row_includes_shot_flags_and_assist():
+    row = shot_row(RECORD, make_shot(key_pass=make_pass(cross=True)))
+
+    assert row["one_on_one"] is False
+    assert row["assisted"] is True
+    assert row["assist_cross"] is True

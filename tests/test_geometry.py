@@ -3,8 +3,21 @@ import math
 import pandas as pd
 import pytest
 
-from xg_model.geometry import distance, distance_to_goal, goal_angle
+from xg_model.geometry import distance, distance_to_goal, goal_angle, in_triangle
 
+TRIANGLE = ((0.0, 0.0), (10.0, 0.0), (0.0, 10.0))
+
+
+def test_in_triangle_inside():
+    assert in_triangle((2.0, 2.0), *TRIANGLE)
+
+
+def test_in_triangle_outside():
+    assert not in_triangle((8.0, 8.0), *TRIANGLE)
+
+
+def test_in_triangle_on_edge_counts_as_inside():
+    assert in_triangle((5.0, 0.0), *TRIANGLE)
 
 def test_distance_classic_triangle():
     assert distance(0, 0, 3, 4) == 5
