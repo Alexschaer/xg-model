@@ -1,5 +1,6 @@
 """Prepare the feature table for model training."""
 
+import numpy as np
 import pandas as pd
 
 from xg_model.features.game_state import PENALTY_SHOOTOUT_PERIOD
@@ -8,6 +9,7 @@ FIRST_SEASON = 2003
 
 NUMERIC = [
     "distance",
+    "log_distance",
     "angle",
     "defenders_in_cone",
     "nearest_opponent_distance",
@@ -27,6 +29,7 @@ FLAGS = [
     "assist_cross",
     "assist_through_ball",
     "assist_cut_back",
+    "any_defender_in_cone",
     "goalkeeper_visible",
     "goalkeeper_in_cone",
     "is_home",
@@ -67,6 +70,14 @@ def fill_missing(table: pd.DataFrame) -> pd.DataFrame:
     )
 
 
+def add_transformations(table: pd.DataFrame) -> pd.DataFrame:
+    """Add reshaped versions of features whose effect is not linear."""
+    return table.assign(
+        log_distance=np.log1p(table["distance"]),
+        any_defender_in_cone=table["defenders_in_cone"] > 0,
+    )
+
+
 def one_hot(table: pd.DataFrame, column: str) -> pd.DataFrame:
     """Encode a category column as 0/1 columns, dropping the most common one."""
     baseline = table[column].mode()[0]
@@ -76,7 +87,11 @@ def one_hot(table: pd.DataFrame, column: str) -> pd.DataFrame:
 
 def prepare(table: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
     """Return the model inputs and the goal labels."""
-    table = fill_missing(filter_shots(table)).dropna(subset=NUMERIC)
+    table = filter_shots(table)
+    table = fill_missing(table)
+    table = add_transformations(table)
+    table = table.dropna(subset=NUMERIC)
+
     features = pd.concat(
         [
             table[NUMERIC].astype(float),

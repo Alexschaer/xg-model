@@ -1,8 +1,10 @@
 import math
 
 import pandas as pd
+import pytest
 
 from xg_model.modelling.prepare import (
+    add_transformations,
     fill_missing,
     filter_shots,
     one_hot,
@@ -102,3 +104,23 @@ def test_prepare_drops_rows_with_remaining_gaps():
     features, labels = prepare(table({}, {"nearest_opponent_distance": math.nan}))
 
     assert len(features) == len(labels) == 1
+
+
+def test_add_transformations_takes_log_of_distance():
+    result = add_transformations(table({"distance": math.e - 1}))
+
+    assert result["log_distance"].iloc[0] == pytest.approx(1)
+
+
+def test_add_transformations_flags_any_defender():
+    result = add_transformations(
+        table({"defenders_in_cone": 0.0}, {"defenders_in_cone": 3.0})
+    )
+
+    assert list(result["any_defender_in_cone"]) == [False, True]
+
+
+def test_prepare_includes_transformed_features():
+    features, _ = prepare(table({}))
+
+    assert {"log_distance", "any_defender_in_cone"} <= set(features.columns)

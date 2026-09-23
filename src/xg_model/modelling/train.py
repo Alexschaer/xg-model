@@ -14,6 +14,7 @@ from xg_model.modelling.scaling import Standardizer
 from xg_model.modelling.split import holdout_mask
 
 FIGURES_DIR = Path("docs/images")
+ITERATIONS = 3000
 
 
 def main() -> None:  # pragma: no cover
@@ -29,7 +30,9 @@ def main() -> None:  # pragma: no cover
     x_test, y_test = x[is_test], y[is_test]
 
     scaler = Standardizer().fit(x_train)
-    model = LogisticRegression().fit(scaler.transform(x_train), y_train)
+    model = LogisticRegression(iterations=ITERATIONS).fit(
+        scaler.transform(x_train), y_train
+    )
     predictions = model.predict_proba(scaler.transform(x_test))
 
     history = model.loss_history
