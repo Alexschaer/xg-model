@@ -1,0 +1,188 @@
+:root {
+  --background: #eef1f3;
+  --panel: #ffffff;
+  --text: #1d2327;
+  --muted: #5f6b73;
+  --grass: #2e7d4f;
+  --grass-edge: #276b43;
+  --line: rgba(255, 255, 255, 0.85);
+  --shooter: #f2c230;
+  --defender: #d94848;
+  --goalkeeper: #3b6fd9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--text);
+  background: var(--background);
+}
+
+header,
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+header {
+  padding-top: 24px;
+}
+
+header h1 {
+  margin: 0 0 6px;
+}
+
+header p {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--muted);
+}
+
+main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 24px;
+  padding-top: 20px;
+  padding-bottom: 32px;
+}
+
+.pitch-panel {
+  flex: 2 1 480px;
+}
+
+#pitch {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  background: var(--grass-edge);
+  cursor: crosshair;
+}
+
+.grass {
+  fill: var(--grass);
+}
+
+.lines rect,
+.lines path {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 0.3;
+}
+
+.spot {
+  fill: var(--line);
+}
+
+.goal {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 0.4;
+}
+
+#cone {
+  fill: rgba(242, 194, 48, 0.18);
+  stroke: rgba(242, 194, 48, 0.6);
+  stroke-width: 0.2;
+}
+
+.shooter,
+.defender,
+.goalkeeper {
+  stroke: #ffffff;
+  stroke-width: 0.3;
+}
+
+.shooter {
+  fill: var(--shooter);
+}
+
+.defender {
+  fill: var(--defender);
+  cursor: pointer;
+}
+
+.goalkeeper {
+  fill: var(--goalkeeper);
+}
+
+aside {
+  flex: 1 1 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px;
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.label {
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+#xg-value {
+  font-size: 3rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+#xg-hint {
+  min-height: 1.2em;
+  color: var(--muted);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+fieldset {
+  margin: 0;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+legend {
+  float: left;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 0;
+  font-weight: 600;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+select {
+  margin-left: auto;
+  padding: 4px 6px;
+  font: inherit;
+}
+
+.note {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}

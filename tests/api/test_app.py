@@ -47,3 +47,10 @@ def test_too_many_defenders_are_rejected():
     defenders = [{"x": 110, "y": 40}] * 11
 
     assert post_shot(defenders=defenders).status_code == 422
+
+
+def test_frontend_is_served():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "Expected goals" in response.text

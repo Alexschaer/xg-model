@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>xG model</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Expected goals</h1>
+      <p>
+        Place the shooter, defenders and goalkeeper and see how likely a goal is.
+        The model is a logistic regression built from scratch on around 100,000
+        shots from StatsBomb open data.
+      </p>
+    </header>
+
+    <main>
+      <section class="pitch-panel">
+        <svg id="pitch" viewBox="-4 -4 88 68" role="img"
+             aria-label="Attacking half of a football pitch">
+          <rect class="grass" x="0" y="0" width="80" height="60" />
+          <g class="lines">
+            <rect x="0" y="0" width="80" height="60" />
+            <rect x="18" y="0" width="44" height="18" />
+            <rect x="30" y="0" width="20" height="6" />
+            <path d="M 32 18 A 10 10 0 0 0 48 18" />
+            <path d="M 30 60 A 10 10 0 0 1 50 60" />
+          </g>
+          <circle class="spot" cx="40" cy="12" r="0.4" />
+          <rect class="goal" x="36" y="-2" width="8" height="2" />
+          <polygon id="cone" />
+          <g id="players"></g>
+        </svg>
+      </section>
+
+      <aside>
+        <div class="result">
+          <span class="label">Expected goals</span>
+          <span id="xg-value">–</span>
+          <span id="xg-hint"></span>
+        </div>
+
+        <form id="options">
+          <fieldset>
+            <legend>Click on the pitch to</legend>
+            <label><input type="radio" name="mode" value="shooter" checked /> move the shooter</label>
+            <label><input type="radio" name="mode" value="defender" /> add a defender</label>
+            <label><input type="radio" name="mode" value="goalkeeper" /> move the goalkeeper</label>
+            <p class="note">Click on a defender to remove it.</p>
+          </fieldset>
+
+          <fieldset>
+            <legend>Shot</legend>
+            <label>Body part
+              <select name="body_part">
+                <option>Right Foot</option>
+                <option>Left Foot</option>
+                <option>Head</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label>Technique
+              <select name="technique">
+                <option>Normal</option>
+                <option>Volley</option>
+                <option>Half Volley</option>
+                <option>Lob</option>
+              </select>
+            </label>
+            <label><input type="checkbox" name="first_time" /> First time</label>
+            <label><input type="checkbox" name="under_pressure" /> Under pressure</label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Assist</legend>
+            <label>Pass
+              <select name="assist">
+                <option>None</option>
+                <option>Ground Pass</option>
+                <option>Low Pass</option>
+                <option>High Pass</option>
+              </select>
+            </label>
+            <label><input type="checkbox" name="through_ball" /> Through ball</label>
+            <label><input type="checkbox" name="cross" /> Cross</label>
+            <label><input type="checkbox" name="cut_back" /> Cut-back</label>
+          </fieldset>
+        </form>
+      </aside>
+    </main>
+  </body>
+</html>
