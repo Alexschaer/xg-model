@@ -18,3 +18,15 @@ dev = [
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov"
+
+[tool.coverage.run]
+source = ["xg_model"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
